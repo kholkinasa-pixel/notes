@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git — памятка для новичка</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@700;900&family=Mulish:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #eceae4;
+    --card: #ffffff;
+    --border: #ddd9d0;
+    --accent: #e05c1a;
+    --accent2: #0284c7;
+    --accent3: #7c3aed;
+    --green: #16a34a;
+    --text: #1c1a17;
+    --muted: #78716c;
+    --code-bg: #f0ede7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Mulish', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(224,92,26,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(2,132,199,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 48px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(224,92,26,0.1);
+    border: 1px solid rgba(224,92,26,0.25);
+    padding: 4px 12px;
+    border-radius: 2px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 520px;
+    line-height: 1.6;
+  }
+
+  .section {
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+  .section:nth-child(5) { animation-delay: 0.4s; }
+  .section:nth-child(6) { animation-delay: 0.5s; }
+
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .cards {
+    display: grid;
+    gap: 10px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--card-accent, var(--accent));
+    border-radius: 8px 0 0 8px;
+  }
+
+  .card:hover {
+    border-color: var(--card-accent, var(--accent));
+    transform: translateX(3px);
+  }
+
+  .card-cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 6px 10px;
+    white-space: nowrap;
+    align-self: start;
+  }
+
+  .card-cmd .keyword {
+    color: var(--card-accent, var(--accent));
+  }
+
+  .card-body {}
+
+  .card-what {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .card-why {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .card-example {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    display: inline-block;
+  }
+
+  .card-example .comment {
+    color: var(--muted);
+  }
+
+  /* Color themes per section */
+  .theme-orange { --card-accent: #e05c1a; }
+  .theme-blue   { --card-accent: #0284c7; }
+  .theme-violet { --card-accent: #7c3aed; }
+  .theme-green  { --card-accent: #16a34a; }
+  .theme-pink   { --card-accent: #db2777; }
+  .theme-teal   { --card-accent: #0d9488; }
+  .theme-amber  { --card-accent: #b45309; }
+  .theme-rose   { --card-accent: #e11d48; }
+
+  .tip-box {
+    background: rgba(2,132,199,0.05);
+    border: 1px solid rgba(2,132,199,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.7;
+  }
+
+  .tip-box strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+
+  .flow-step {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    background: rgba(22,163,74,0.08);
+    border: 1px solid rgba(22,163,74,0.25);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .flow-arrow {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="tag">// cheatsheet</div>
+    <h1>Git — памятка<br>для <span>новичка</span></h1>
+    <p class="subtitle">Только нужные команды. Коротко, по делу, с примерами.</p>
+  </header>
+
+  <!-- НАСТРОЙКА -->
+  <div class="section theme-orange">
+    <div class="section-title">01 — Настройка</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> config</div>
+        <div class="card-body">
+          <div class="card-what">Представиться гиту</div>
+          <div class="card-why">Твоё имя и почта будут видны в истории коммитов. Делается один раз при установке.</div>
+          <div class="card-example">git config --global user.name "Имя"<br>git config --global user.email "email@mail.ru"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- СОЗДАНИЕ И КЛОНИРОВАНИЕ -->
+  <div class="section theme-blue">
+    <div class="section-title">02 — Создание репозитория</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> init</div>
+        <div class="card-body">
+          <div class="card-what">Создать репозиторий с нуля</div>
+          <div class="card-why">Превращает обычную папку в git-репозиторий. Запускается один раз в начале проекта.</div>
+          <div class="card-example">git init</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> clone</div>
+        <div class="card-body">
+          <div class="card-what">Скачать чужой репозиторий</div>
+          <div class="card-why">Копирует проект с GitHub (или другого сервера) к тебе на компьютер со всей историей.</div>
+          <div class="card-example">git clone https://github.com/user/repo.git</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- СОХРАНЕНИЕ ИЗМЕНЕНИЙ -->
+  <div class="section theme-violet">
+    <div class="section-title">03 — Сохранение изменений</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> status</div>
+        <div class="card-body">
+          <div class="card-what">Что сейчас происходит?</div>
+          <div class="card-why">Показывает какие файлы изменены, какие готовы к коммиту, а какие ещё нет. Используй постоянно.</div>
+          <div class="card-example">git status</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> add</div>
+        <div class="card-body">
+          <div class="card-what">Подготовить файлы к коммиту</div>
+          <div class="card-why">Говоришь гиту: «эти файлы я хочу сохранить». Без этого коммит не получится.</div>
+          <div class="card-example">git add index.html &nbsp;<span class="comment"># один файл</span><br>git add . &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># все изменения</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> commit</div>
+        <div class="card-body">
+          <div class="card-what">Сделать «снимок» проекта</div>
+          <div class="card-why">Сохраняет текущее состояние файлов в историю. Всегда пиши понятное сообщение — что изменил и зачем.</div>
+          <div class="card-example">git commit -m "Добавил форму входа"</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> diff</div>
+        <div class="card-body">
+          <div class="card-what">Что именно изменилось?</div>
+          <div class="card-why">Показывает построчно, что ты добавил или удалил с последнего коммита. Удобно перед коммитом.</div>
+          <div class="card-example">git diff</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ИСТОРИЯ -->
+  <div class="section theme-green">
+    <div class="section-title">04 — История и отмена</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> log</div>
+        <div class="card-body">
+          <div class="card-what">Посмотреть историю коммитов</div>
+          <div class="card-why">Показывает все сохранения: кто, когда и с каким сообщением. Флаг --oneline делает список компактным.</div>
+          <div class="card-example">git log --oneline</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> restore</div>
+        <div class="card-body">
+          <div class="card-what">Отменить изменения в файле</div>
+          <div class="card-why">Возвращает файл к состоянию последнего коммита. Пригодится если что-то сломал и хочешь откатить.</div>
+          <div class="card-example">git restore index.html</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> reset</div>
+        <div class="card-body">
+          <div class="card-what">Убрать файл из подготовленных</div>
+          <div class="card-why">Отменяет git add — файл остаётся изменённым, но уже не попадёт в следующий коммит.</div>
+          <div class="card-example">git reset HEAD index.html</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВЕТКИ -->
+  <div class="section theme-pink">
+    <div class="section-title">05 — Ветки</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> branch</div>
+        <div class="card-body">
+          <div class="card-what">Список веток / создать ветку</div>
+          <div class="card-why">Ветки — это параллельные версии проекта. Делаешь новую фичу — создай ветку, не ломай основную.</div>
+          <div class="card-example">git branch &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># список</span><br>git branch feature-login &nbsp;<span class="comment"># создать</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> switch</div>
+        <div class="card-body">
+          <div class="card-what">Переключиться на другую ветку</div>
+          <div class="card-why">Переходишь работать в другую ветку. С флагом -c создаёт и сразу переключается.</div>
+          <div class="card-example">git switch main<br>git switch -c new-feature &nbsp;<span class="comment"># создать + перейти</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> checkout</div>
+        <div class="card-body">
+          <div class="card-what">Старый способ переключения — умеет много</div>
+          <div class="card-why">Раньше делал всё: переключал ветки, создавал их, восстанавливал файлы. Сейчас его заменили switch и restore, но ты будешь встречать checkout в туториалах — знай, что это одно и то же.</div>
+          <div class="card-example">git checkout main &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># перейти на ветку</span><br>git checkout -b new-feature &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># создать + перейти</span><br>git checkout index.html &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># откатить файл</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> merge</div>
+        <div class="card-body">
+          <div class="card-what">Слить ветку в текущую</div>
+          <div class="card-why">Объединяет изменения из другой ветки в ту, где ты сейчас находишься. Если один и тот же файл правили в обеих ветках — возникнет конфликт, его нужно разрешить вручную.</div>
+          <div class="card-example">git switch main<br>git merge feature-login &nbsp;<span class="comment"># влить feature-login в main</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ОТМЕНА -->
+  <div class="section theme-teal">
+    <div class="section-title">06 — Отмена коммитов</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> revert</div>
+        <div class="card-body">
+          <div class="card-what">Отменить коммит безопасно</div>
+          <div class="card-why">Создаёт новый коммит, который отменяет старый — история не теряется. Это безопасный способ откатить изменения, особенно если уже сделал push на GitHub. В отличие от reset, revert не переписывает историю.</div>
+          <div class="card-example">git log --oneline &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># смотришь хэш коммита</span><br>git revert a3f5c12 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># отменяешь его</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GITHUB -->
+  <div class="section theme-amber">
+    <div class="section-title">07 — Работа с GitHub</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> push</div>
+        <div class="card-body">
+          <div class="card-what">Отправить коммиты на GitHub</div>
+          <div class="card-why">Загружает твои сохранения на удалённый сервер. Делай это регулярно — это твой бэкап.</div>
+          <div class="card-example">git push origin main</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">git</span> pull</div>
+        <div class="card-body">
+          <div class="card-what">Скачать изменения с GitHub</div>
+          <div class="card-why">Подтягивает чужие (или твои с другого компьютера) коммиты. Делай перед началом работы.</div>
+          <div class="card-example">git pull origin main</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PULL REQUEST -->
+  <div class="section theme-rose">
+    <div class="section-title">08 — Pull Request</div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">Что</span> такое PR?</div>
+        <div class="card-body">
+          <div class="card-what">Запрос на слияние твоей ветки</div>
+          <div class="card-why">Pull Request (PR) — это предложение добавить твои изменения в основную ветку. Ты как бы говоришь команде: «смотрите, что я сделал — проверьте и примите». PR живёт на GitHub, а не в гите — это интерфейс для code review.</div>
+          <div class="card-example"><span class="comment"># Всё делается через сайт GitHub, не через терминал</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">Шаг</span> 1</div>
+        <div class="card-body">
+          <div class="card-what">Создай ветку и запушь её</div>
+          <div class="card-why">Никогда не работай напрямую в main. Создай отдельную ветку для своей задачи, сделай коммиты и отправь ветку на GitHub.</div>
+          <div class="card-example">git switch -c fix-header-bug<br><span class="comment"># ... делаешь изменения ...</span><br>git add .<br>git commit -m "Исправил баг в шапке"<br>git push origin fix-header-bug</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">Шаг</span> 2</div>
+        <div class="card-body">
+          <div class="card-what">Открой PR на GitHub</div>
+          <div class="card-why">Зайди на страницу репозитория — GitHub сам предложит кнопку «Compare & pull request». Нажми, напиши название и описание: что сделал и зачем. Выбери, в какую ветку хочешь влить (обычно main).</div>
+          <div class="card-example"><span class="comment"># GitHub покажет кнопку сам после push'а</span><br><span class="comment"># Или: вкладка Pull Requests → New pull request</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">Шаг</span> 3</div>
+        <div class="card-body">
+          <div class="card-what">Code review — коллеги смотрят твой код</div>
+          <div class="card-why">Другие разработчики оставляют комментарии прямо к строкам кода. Ты отвечаешь, вносишь правки и делаешь новые коммиты в ту же ветку — PR обновится автоматически.</div>
+          <div class="card-example"><span class="comment"># Внёс правки после ревью:</span><br>git add .<br>git commit -m "Учёл комментарии ревью"<br>git push origin fix-header-bug</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-cmd"><span class="keyword">Шаг</span> 4</div>
+        <div class="card-body">
+          <div class="card-what">Merge — PR принят и влит</div>
+          <div class="card-why">Когда все довольны, кто-то нажимает «Merge pull request» на GitHub. Твои изменения попадают в main. После этого ветку можно удалить — она больше не нужна.</div>
+          <div class="card-example"><span class="comment"># После merge — удали ветку локально:</span><br>git switch main<br>git pull origin main<br>git branch -d fix-header-bug</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ТИПИЧНЫЙ СЦЕНАРИЙ -->
+  <div class="section">
+    <div class="section-title">09 — Типичный рабочий день</div>
+    <div class="tip-box">
+      <strong>Стандартный цикл работы выглядит так:</strong>
+      <div class="flow">
+        <span class="flow-step">git pull</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">поработал</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">git add .</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">git commit -m "..."</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">git push</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">открыл PR</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

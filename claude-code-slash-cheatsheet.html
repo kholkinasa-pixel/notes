@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code / Commands</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --surface2: #faf9f6;
+  --border: #e4e0d8;
+  --border2: #d0ccc2;
+  --text: #1a1816;
+  --muted: #6b6560;
+  --muted2: #9b958d;
+  --accent-blue: #2563eb;
+  --accent-purple: #7c3aed;
+  --accent-green: #16a34a;
+  --accent-orange: #d97706;
+  --accent-red: #dc2626;
+  --tag-blue-bg: #eff6ff;
+  --tag-blue-border: #bfdbfe;
+  --tag-purple-bg: #f5f3ff;
+  --tag-purple-border: #ddd6fe;
+  --tag-green-bg: #f0fdf4;
+  --tag-green-border: #bbf7d0;
+  --tag-orange-bg: #fffbeb;
+  --tag-orange-border: #fde68a;
+  --tag-red-bg: #fef2f2;
+  --tag-red-border: #fecaca;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Instrument Sans', sans-serif;
+  line-height: 1.5;
+  padding: 40px 24px 64px;
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Header */
+header {
+  margin-bottom: 40px;
+  padding-bottom: 28px;
+  border-bottom: 2px solid var(--border);
+}
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title-block h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.title-block h1 span {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--accent-blue);
+}
+
+.title-block p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.tip-box {
+  background: var(--tag-blue-bg);
+  border: 1px solid var(--tag-blue-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--accent-blue);
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+.tip-box strong { font-weight: 600; }
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.badge-blue   { background: var(--tag-blue-bg);   color: var(--accent-blue);   border: 1px solid var(--tag-blue-border); }
+.badge-purple { background: var(--tag-purple-bg); color: var(--accent-purple); border: 1px solid var(--tag-purple-border); }
+.badge-green  { background: var(--tag-green-bg);  color: var(--accent-green);  border: 1px solid var(--tag-green-border); }
+.badge-orange { background: var(--tag-orange-bg); color: var(--accent-orange); border: 1px solid var(--tag-orange-border); }
+.badge-red    { background: var(--tag-red-bg);    color: var(--accent-red);    border: 1px solid var(--tag-red-border); }
+
+.legend-label {
+  font-size: 13px;
+  color: var(--muted);
+  align-self: center;
+}
+
+/* Sections */
+.section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 12px;
+  padding-left: 2px;
+}
+
+/* Command table */
+.table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 220px 1fr auto;
+  align-items: start;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+  transition: background 0.1s;
+}
+
+.row:last-child { border-bottom: none; }
+.row:hover { background: var(--surface2); }
+
+.cmd-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.cmd {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 5px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.desc strong { color: var(--text); font-weight: 600; }
+.desc code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  background: #f0ede8;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+.note-cell {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.dot-blue   { background: var(--accent-blue); }
+.dot-purple { background: var(--accent-purple); }
+.dot-green  { background: var(--accent-green); }
+.dot-orange { background: var(--accent-orange); }
+.dot-red    { background: var(--accent-red); }
+
+/* Flow block */
+.flow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.flow-header {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flow-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.flow-item {
+  padding: 16px 18px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.flow-item:last-child { border-right: none; }
+
+.flow-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted2);
+  margin-bottom: 6px;
+}
+
+.flow-cmds {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.flow-desc {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Memory block */
+.mem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.mem-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.mem-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mem-file {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.mem-note {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.mem-note code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  background: #f0ede8;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+/* Callout */
+.callout {
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+.callout-blue   { background: var(--tag-blue-bg);   border: 1px solid var(--tag-blue-border);   color: #1d4ed8; }
+.callout-green  { background: var(--tag-green-bg);  border: 1px solid var(--tag-green-border);  color: #15803d; }
+.callout-orange { background: var(--tag-orange-bg); border: 1px solid var(--tag-orange-border); color: #b45309; }
+
+.callout strong { font-weight: 600; }
+
+/* Context meter example */
+.context-demo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-top: 8px;
+}
+
+.meter-bar {
+  flex: 1;
+  height: 8px;
+  background: #e4e0d8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.meter-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Footer */
+footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: gap;
+  font-size: 12px;
+  color: var(--muted2);
+}
+
+footer a { color: var(--accent-blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; gap: 6px; }
+  .note-cell { display: none; }
+  .header-top { flex-direction: column; }
+  .tip-box { max-width: 100%; }
+  footer { flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="title-block">
+      <h1>Claude Code <span>/commands</span></h1>
+      <p>Управление контекстом, памятью и сессиями для вайб-кодинга</p>
+    </div>
+    <div class="tip-box">
+      <strong>Быстрый старт:</strong> введи <code style="font-family:monospace;background:#dbeafe;padding:1px 4px;border-radius:3px">/</code> в пустой строке — покажет все доступные команды. Фильтрует по мере набора.
+    </div>
+  </div>
+  <div class="legend" style="margin-top:18px;">
+    <span class="legend-label">Категории:</span>
+    <span class="badge badge-blue">● Контекст</span>
+    <span class="badge badge-purple">● Память</span>
+    <span class="badge badge-green">● Сессия</span>
+    <span class="badge badge-orange">● Модель</span>
+    <span class="badge badge-red">● Код и ревью</span>
+  </div>
+</header>
+
+<!-- CONTEXT -->
+<div class="section">
+  <div class="section-title">🪟 Контекст — самое важное</div>
+  <div class="table">
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-blue">/context</span></div>
+      <div class="desc">
+        <strong>Показать заполненность контекстного окна.</strong> Цветная сетка — сколько занято файлами, историей, системным промптом. Твой «датчик топлива».
+      </div>
+      <div class="note-cell"><div class="dot dot-blue"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-blue">/compact</span></div>
+      <div class="desc">
+        <strong>Сжать историю, сохранив суть.</strong> Суммирует диалог — контекст уменьшается, важное остаётся. Запускай при 70–80% заполнения, не жди лимита.
+      </div>
+      <div class="note-cell"><div class="dot dot-blue"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-blue">/compact <em>инструкция</em></span></div>
+      <div class="desc">
+        <strong>Компакт с указанием что сохранить.</strong> Например: <code>/compact keep auth flow and DB schema</code> — оставит именно эти детали, остальное сожмёт.
+      </div>
+      <div class="note-cell"><div class="dot dot-blue"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-green">/clear</span></div>
+      <div class="desc">
+        <strong>Полный сброс истории.</strong> Контекст пуст — как новая сессия. Файлы, которые Claude редактировал, остаются. Используй при переходе к новой задаче.
+      </div>
+      <div class="note-cell"><div class="dot dot-green"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-blue">/cost</span></div>
+      <div class="desc">
+        <strong>Стоимость и токены текущей сессии.</strong> Показывает input/output токены и $ потрачено. Следи во время длинных агентных циклов.
+      </div>
+      <div class="note-cell"><div class="dot dot-blue"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-blue">/usage</span></div>
+      <div class="desc">
+        <strong>Лимиты и rate limit.</strong> Проверь, не близко ли к порогу запросов.
+      </div>
+      <div class="note-cell"><div class="dot dot-blue"></div></div>
+    </div>
+
+  </div>
+
+  <div class="callout callout-orange" style="margin-top:10px;">
+    <strong>Правило:</strong> /compact — при работе над той же задачей. /clear — при переходе к другой. Старый контекст мешает больше, чем помогает.
+  </div>
+</div>
+
+<!-- MEMORY -->
+<div class="section">
+  <div class="section-title">🧠 Память — персистентный контекст</div>
+
+  <div class="mem-grid">
+
+    <div class="mem-card">
+      <div class="mem-card-title"><span class="badge badge-purple" style="font-size:11px;">CLAUDE.md</span> Память проекта</div>
+      <div class="mem-file">./CLAUDE.md</div>
+      <div class="mem-note">
+        Claude читает этот файл в начале каждой сессии. Пиши сюда: стек, правила кода, архитектуру, что нельзя трогать. Создаётся через <code>/init</code> или вручную.
+      </div>
+    </div>
+
+    <div class="mem-card">
+      <div class="mem-card-title"><span class="badge badge-purple" style="font-size:11px;">~/.claude/CLAUDE.md</span> Глобальная память</div>
+      <div class="mem-file">~/.claude/CLAUDE.md</div>
+      <div class="mem-note">
+        Твои персональные правила для всех проектов: стиль кода, предпочтения, запреты. Работает везде.
+      </div>
+    </div>
+
+    <div class="mem-card">
+      <div class="mem-card-title"><span class="badge badge-purple" style="font-size:11px;">/memory</span> Редактор памяти</div>
+      <div class="mem-file">/memory</div>
+      <div class="mem-note">
+        Открывает CLAUDE.md прямо из сессии для редактирования. Добавляй заметки на лету — они останутся в следующей сессии.
+      </div>
+    </div>
+
+    <div class="mem-card">
+      <div class="mem-card-title"><span class="badge badge-purple" style="font-size:11px;"># shortcut</span> Быстрая запись в память</div>
+      <div class="mem-file"># текст</div>
+      <div class="mem-note">
+        Начни сообщение с <code>#</code> — Claude сохранит это как заметку в память без добавления в основной диалог.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:10px;">
+    <strong>Что писать в CLAUDE.md:</strong> tech stack, соглашения по именованию, структуру папок, что не трогать (prod DB, env-файлы), линтеры и форматтеры, команды запуска тестов.
+  </div>
+</div>
+
+<!-- SESSION -->
+<div class="section">
+  <div class="section-title">💬 Управление сессиями</div>
+  <div class="table">
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-green">claude -c</span></div>
+      <div class="desc">
+        <strong>Продолжить последнюю сессию</strong> (из терминала, до запуска). Идеально чтобы вернуться к вчерашнему контексту.
+      </div>
+      <div class="note-cell"><div class="dot dot-green"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-green">claude -r "session-id"</span></div>
+      <div class="desc">
+        <strong>Возобновить конкретную сессию по ID.</strong> ID показывается при старте или через <code>/status</code>.
+      </div>
+      <div class="note-cell"><div class="dot dot-green"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-green">/status</span></div>
+      <div class="desc">
+        <strong>Версия, session ID, статус подключения.</strong> Нужен ID — смотри здесь.
+      </div>
+      <div class="note-cell"><div class="dot dot-green"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-green">/todos</span></div>
+      <div class="desc">
+        <strong>Список задач из текущей сессии.</strong> Claude автоматически трекает таски упомянутые в диалоге.
+      </div>
+      <div class="note-cell"><div class="dot dot-green"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-green">/btw <em>вопрос</em></span></div>
+      <div class="desc">
+        <strong>Задать вопрос «в сторону» не прерывая основную задачу.</strong> Контекст не затрагивается. Работает пока Claude что-то делает.
+      </div>
+      <div class="note-cell"><div class="dot dot-green"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-green">/branch</span></div>
+      <div class="desc">
+        <strong>Создать ответвление разговора.</strong> Попробуй альтернативный подход не теряя текущий контекст.
+      </div>
+      <div class="note-cell"><div class="dot dot-green"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODEL -->
+<div class="section">
+  <div class="section-title">🤖 Модель и режимы</div>
+  <div class="table">
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-orange">/model</span></div>
+      <div class="desc">
+        <strong>Сменить модель прямо в сессии</strong> без перезапуска. Список выбора появится интерактивно.
+      </div>
+      <div class="note-cell"><div class="dot dot-orange"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-orange">/model sonnet</span></div>
+      <div class="desc">
+        <strong>Sonnet 4.6 — дефолт для большинства задач.</strong> Баланс скорости и качества. Используй 80% времени.
+      </div>
+      <div class="note-cell"><div class="dot dot-orange"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-orange">/model opus</span></div>
+      <div class="desc">
+        <strong>Opus 4.6 — для сложных задач.</strong> Архитектурные решения, сложный баг, рефакторинг большой кодовой базы. Дороже — переключайся обратно после.
+      </div>
+      <div class="note-cell"><div class="dot dot-orange"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-orange">/model haiku</span></div>
+      <div class="desc">
+        <strong>Haiku 4.5 — быстро и дёшево.</strong> Простые правки, форматирование, переименование, шаблонный код.
+      </div>
+      <div class="note-cell"><div class="dot dot-orange"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-orange">/effort</span></div>
+      <div class="desc">
+        <strong>Уровень «размышления» Claude.</strong> Интерактивный слайдер. Больше effort → глубже анализ → медленнее и дороже.
+      </div>
+      <div class="note-cell"><div class="dot dot-orange"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CODE & REVIEW -->
+<div class="section">
+  <div class="section-title">🔍 Код, ревью и разработка</div>
+  <div class="table">
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-red">/init</span></div>
+      <div class="desc">
+        <strong>Создать CLAUDE.md для проекта.</strong> Запускай в новом проекте первым делом — Claude изучит структуру и сам заполнит файл.
+      </div>
+      <div class="note-cell"><div class="dot dot-red"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-red">/review</span></div>
+      <div class="desc">
+        <strong>Код-ревью последних изменений.</strong> Структурированный анализ: баги, стиль, безопасность. Надёжнее чем «посмотри мой код» в чат.
+      </div>
+      <div class="note-cell"><div class="dot dot-red"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-red">/diff</span></div>
+      <div class="desc">
+        <strong>Показать текущий diff прямо в Claude.</strong> Все изменения сессии — без выхода в git.
+      </div>
+      <div class="note-cell"><div class="dot dot-red"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-red">/plan <em>задача</em></span></div>
+      <div class="desc">
+        <strong>Составить план перед работой.</strong> Например: <code>/plan refactor auth without breaking tests</code>. Хорошая практика перед сложными правками.
+      </div>
+      <div class="note-cell"><div class="dot dot-red"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-red">/debug <em>проблема</em></span></div>
+      <div class="desc">
+        <strong>Целенаправленная отладка.</strong> Claude трейсит поток выполнения, ищет причину. Работает лучше с конкретным описанием.
+      </div>
+      <div class="note-cell"><div class="dot dot-red"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-red">! команда</span></div>
+      <div class="desc">
+        <strong>Запустить shell прямо из чата.</strong> <code>! git status</code>, <code>! npm test</code> — вывод попадает в контекст. Без переключения между вкладками.
+      </div>
+      <div class="note-cell"><div class="dot dot-red"></div></div>
+    </div>
+
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-red">@файл.ts</span></div>
+      <div class="desc">
+        <strong>Включить файл в промпт.</strong> <code>@src/auth.ts</code> — Claude видит содержимое. Работает с папками: <code>@src/components/</code>.
+      </div>
+      <div class="note-cell"><div class="dot dot-red"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CUSTOM COMMANDS -->
+<div class="section">
+  <div class="section-title">⚡ Кастомные команды</div>
+
+  <div class="table">
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-purple">.claude/commands/</span></div>
+      <div class="desc">
+        <strong>Команды проекта</strong> — доступны всей команде, коммитятся в репо. Создай файл <code>review.md</code> → вызывай через <code>/review</code>.
+      </div>
+      <div class="note-cell"><div class="dot dot-purple"></div></div>
+    </div>
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-purple">~/.claude/commands/</span></div>
+      <div class="desc">
+        <strong>Персональные команды</strong> — работают во всех проектах. Твои личные шорткаты.
+      </div>
+      <div class="note-cell"><div class="dot dot-purple"></div></div>
+    </div>
+    <div class="row">
+      <div class="cmd-cell"><span class="cmd badge-purple">$ARGUMENTS</span></div>
+      <div class="desc">
+        <strong>Передать аргументы в команду.</strong> В файле команды напиши <code>$ARGUMENTS</code> — при вызове <code>/fix-bug 123 high</code> подставятся значения.
+      </div>
+      <div class="note-cell"><div class="dot dot-purple"></div></div>
+    </div>
+  </div>
+
+  <div class="callout callout-green" style="margin-top:10px;">
+    <strong>Лайфхак:</strong> попроси Claude создать команду за тебя — <em>«создай slash-команду /ship которая делает review, коммит и пуш»</em>. Он сам напишет markdown с нужным front matter.
+  </div>
+</div>
+
+<!-- WORKFLOW -->
+<div class="section">
+  <div class="section-title">🔄 Рабочие сценарии для вайб-кодинга</div>
+
+  <div class="flow">
+    <div class="flow-header">
+      ▸ Типичные последовательности команд
+    </div>
+    <div class="flow-body">
+
+      <div class="flow-item">
+        <div class="flow-num">01 · Начало нового проекта</div>
+        <div class="flow-cmds">
+          <span class="cmd badge-red" style="align-self:start;">/init</span>
+          <span class="cmd badge-purple" style="align-self:start;">/memory</span>
+          <span class="cmd badge-blue" style="align-self:start;">/context</span>
+        </div>
+        <div class="flow-desc">Создай CLAUDE.md, добавь правила проекта, проверь что контекст загружен правильно.</div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-num">02 · Длинная фича-сессия</div>
+        <div class="flow-cmds">
+          <span class="cmd badge-blue" style="align-self:start;">/context</span>
+          <span class="cmd badge-blue" style="align-self:start;">/compact keep auth logic</span>
+          <span class="cmd badge-orange" style="align-self:start;">/cost</span>
+        </div>
+        <div class="flow-desc">Каждые 20–30 мин проверяй контекст. Компакти с фокусом. Следи за ценой.</div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-num">03 · Перед мёрджем в main</div>
+        <div class="flow-cmds">
+          <span class="cmd badge-red" style="align-self:start;">/review</span>
+          <span class="cmd badge-red" style="align-self:start;">/diff</span>
+          <span class="cmd badge-green" style="align-self:start;">! git commit -m "..."</span>
+        </div>
+        <div class="flow-desc">Ревью, сверь дифф, закоммить. Claude сам пишет сообщение коммита если попросить.</div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-num">04 · Переключение задач</div>
+        <div class="flow-cmds">
+          <span class="cmd badge-green" style="align-self:start;">/clear</span>
+          <span class="cmd badge-purple" style="align-self:start;"># новый контекст</span>
+        </div>
+        <div class="flow-desc">Сначала очисти всё, потом коротко напомни Claude что сейчас важно через # заметку.</div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-num">05 · Вернуться на следующий день</div>
+        <div class="flow-cmds">
+          <span class="cmd badge-green" style="align-self:start;">claude -c</span>
+          <span class="cmd badge-green" style="align-self:start;">/todos</span>
+          <span class="cmd badge-blue" style="align-self:start;">/context</span>
+        </div>
+        <div class="flow-desc">Продолжи последнюю сессию, глянь список задач, проверь заполненность контекста.</div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-num">06 · Сложная архитектурная задача</div>
+        <div class="flow-cmds">
+          <span class="cmd badge-orange" style="align-self:start;">/model opus</span>
+          <span class="cmd badge-red" style="align-self:start;">/plan рефакторинг</span>
+          <span class="cmd badge-orange" style="align-self:start;">/model sonnet</span>
+        </div>
+        <div class="flow-desc">Переключись на Opus для планирования, вернись на Sonnet для выполнения.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>Документация: <a href="https://docs.claude.com/en/docs/claude-code/overview">docs.claude.com/claude-code</a></span>
+  <span>Введи <code style="font-family:monospace;background:#e4e0d8;padding:1px 6px;border-radius:3px;">/</code> в сессии чтобы увидеть все команды</span>
+  <span style="color:var(--muted2);">Claude Code · 2026</span>
+</footer>
+
+</div>
+</body>
+</html>
